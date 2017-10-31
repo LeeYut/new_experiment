@@ -10,7 +10,7 @@ from sklearn import preprocessing
 from sklearn.utils import shuffle
 from keras.models import model_from_json
 import os
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 #返回值是一个array,是(969,)的形式		
 def read_file(folder_name,tag):
     file_list = os.listdir(folder_name)
