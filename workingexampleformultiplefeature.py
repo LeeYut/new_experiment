@@ -60,7 +60,7 @@ def time_transform(merge, time_step, type):
         y = np.array([0,0,0,1,0,0]*len(x))
     elif(type == 'elevator_down'):
         y = np.array([0,0,0,0,1,0]*len(x))
-    else；
+    else:
         y = np.array([0,0,0,0,0,1]*len(x))	
 
     X = np.array(x)
