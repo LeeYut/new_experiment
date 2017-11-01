@@ -68,7 +68,7 @@ def findCommonParts(folder, file_array, frequency = 100000000):
 #folder_pre = 'escalator_up/test'
 #folder_list = os.listdir(folder_pre)
 
-folder_pre = 'same_floor'
+folder_pre = 'subway'
 folder_list = os.listdir(folder_pre)
 for i in folder_list:
     folder = folder_pre + '/' + i

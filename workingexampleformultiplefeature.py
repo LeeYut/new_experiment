@@ -51,19 +51,21 @@ def time_transform(merge, time_step, type):
     for i in range(len(merge) - time_step + 1):
         x.append(merge_array[i:i+time_step])
     if(type == 'esc_up'):
-        y = np.array([1,0,0,0,0]*len(x))
+        y = np.array([1,0,0,0,0,0]*len(x))
     elif(type == 'esc_down'):
-        y = np.array([0,1,0,0,0]*len(x))
+        y = np.array([0,1,0,0,0,0]*len(x))
     elif(type == 'same_floor'):
-        y = np.array([0,0,1,0,0]*len(x))
+        y = np.array([0,0,1,0,0,0]*len(x))
     elif(type == 'elevator_up'):
-        y = np.array([0,0,0,1,0]*len(x))
-    else:
-        y = np.array([0,0,0,0,1]*len(x))
+        y = np.array([0,0,0,1,0,0]*len(x))
+    elif(type == 'elevator_down'):
+        y = np.array([0,0,0,0,1,0]*len(x))
+    else；
+        y = np.array([0,0,0,0,0,1]*len(x))	
 
     X = np.array(x)
     #这里y要变形，这里的y就是一个纯的list，注意如果有三类数据就需要，reshape的第三维度是3
-    Y = y.reshape(-1,5)
+    Y = y.reshape(-1,6)
     return X, Y
 
 def create_model(x_train, y_train):
@@ -85,19 +87,21 @@ baro_ele_down = read_file('elevator_down/baro', 'p')
 baro_esc_up = read_file('escalator_up/baro', 'p')
 baro_esc_down = read_file('escalator_down/baro', 'p')
 baro_same_floor = read_file('same_floor/baro', 'p')
+baro_subway = read_file('same_floor/baro', 'p')
 
 acc_ele_up = read_file('elevator_up/acc', 'acc')
 acc_ele_down = read_file('elevator_down/acc', 'acc')
 acc_esc_up = read_file('escalator_up/acc', 'acc')
 acc_esc_down = read_file('escalator_down/acc', 'acc')
 acc_same_floor = read_file('same_floor/acc', 'acc')
-
+acc_subway = read_file('subway/acc','acc')
 
 mag_ele_up = read_file('elevator_up/mag', 'm')
 mag_ele_down = read_file('elevator_down/mag', 'm')
 mag_esc_up = read_file('escalator_up/mag', 'm')
 mag_esc_down = read_file('escalator_down/mag', 'm')
 mag_same_floor = read_file('same_floor/mag', 'm')
+mag_subway = read_file('subway/mag','m')
 
 #merge后出来的结果其实是一个list套list，[[],[],[]]，并不是numpy的array
 a = merge(acc_esc_up, baro_esc_up,mag_esc_up)
@@ -105,9 +109,10 @@ b = merge(acc_esc_down,baro_esc_down,mag_esc_down)
 c = merge(acc_ele_up,baro_ele_up,mag_ele_up)
 d = merge(acc_ele_down,baro_ele_down,mag_ele_down)
 e= merge(acc_same_floor,baro_same_floor,mag_same_floor)
+f = merge(acc_subway, baro_subway, mag_subway)
 
 #concave】tenate真的很棒，普通的list也可以被串起来
-a_b_merge = np.concatenate((a,b,c,d,e), axis = 0)
+a_b_merge = np.concatenate((a,b,c,d,e,f), axis = 0)
 
 #以下部分用于对于全部的数据求出正确的均值和方差，用于测试组正规化数据
 scaler = preprocessing.StandardScaler()
@@ -119,16 +124,23 @@ print (scaler.scale_)
 #对数据组a b进行正规化
 a_norm = scaler.transform(a)
 b_norm = scaler.transform(b)
+c_norm = scaler.transform(c)
+d_norm = scaler.transform(d)
+e_norm = scaler.transform(e)
+f_norm = scaler.transform(f)
 
 
 #对a b分别做含有time step的变换,输入的是有多个特征的情形
 x1, y1 = time_transform(a_norm, 40, 'esc_up')
 x2, y2 = time_transform(b_norm, 40, 'esc_down')
-
+x3, y3 = time_transform(c_norm, 40, 'ele_up')
+x4, y4 = time_transform(d_norm, 40, 'ele_down')
+x5, y5 = time_transform(e_norm, 40, 'same_floor')
+x6, y6 = time_transform(f_norm, 40, 'subway')
 
 #合并并且打乱顺序
-X = np.concatenate((x1,x2), axis = 0)
-Y = np.concatenate((y1, y2), axis = 0)
+X = np.concatenate((x1,x2,x3,x4,x5,x6), axis = 0)
+Y = np.concatenate((y1, y2,y3,y4,y5,y6), axis = 0)
 X, Y = shuffle(X, Y)
 
 

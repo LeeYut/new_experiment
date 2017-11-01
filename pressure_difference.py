@@ -18,7 +18,7 @@ def pressure_difference(folder, file):
     new_df.to_csv(os.path.join(folder,"b_diff.csv"), index = False)	
 
 #批量处理
-folder_pre = 'same_floor'
+folder_pre = 'subway'
 folder_list = os.listdir(folder_pre)
 
 for i in folder_list:

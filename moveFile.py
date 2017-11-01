@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- 
 import os
-folder_pre = 'same_floor'
+folder_pre = 'subway'
 folder_list = os.listdir(folder_pre)
 #创建 baro acc mag的folder,注意这一步一定要在folder_list之后
 if not os.path.isdir(folder_pre+'/baro'):
